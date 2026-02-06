@@ -1,15 +1,16 @@
 use swayipc::{Connection, Event, EventType, Fallible, Node, NodeLayout, Rect, WindowChange};
 
-fn find_focused_and_parent_layout(node: &Node, parent_layout: Option<NodeLayout>) -> Option<(Rect, NodeLayout)> {
+fn find_focused_and_parent_layout(node: &Node, parent_layout: NodeLayout) -> Option<(Rect, NodeLayout)> {
     if node.focused {
-        return parent_layout.map(|layout| (node.rect, layout));
+        return Some((node.rect, parent_layout));
     }
-    node.nodes.iter().find_map(|child| find_focused_and_parent_layout(child, Some(node.layout)))
+    node.nodes.iter()
+        .find_map(|child| find_focused_and_parent_layout(child, node.layout))
 }
 
 fn set_layout(conn: &mut Connection) -> Fallible<()> {
     let tree = conn.get_tree()?;
-    if let Some((rect, parent_layout)) = find_focused_and_parent_layout(&tree, None) {
+    if let Some((rect, parent_layout)) = find_focused_and_parent_layout(&tree, tree.layout) {
         if matches!(parent_layout, NodeLayout::Tabbed | NodeLayout::Stacked) {
             return Ok(());
         }
