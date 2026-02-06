@@ -1,7 +1,7 @@
 # hvhvhv
-Inspired by https://github.com/olemartinorg/i3-alternating-layout/
+Inspired by [i3-alternating-layout](https://github.com/olemartinorg/i3-alternating-layout/)
 
-## building
+### building
 ```
 cargo build --release
 ```
