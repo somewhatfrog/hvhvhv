@@ -3,8 +3,8 @@ name = "hvhvhv"
 version = "0.0.1"
 edition = "2024"
 license = "GPL-3.0"
-description = "alternating-layout for swaywm"
+description = "alternating layout for swaywm"
 repository = "https://github.com/somewhatfrog/hvhvhv"
 
 [dependencies]
-swayipc = "3"
+swayipc = "4.0.0"
