@@ -2,16 +2,9 @@ use swayipc::{Connection, Event, EventType, Fallible, Node, NodeLayout, Rect, Wi
 
 fn find_focused_and_parent_layout(node: &Node, parent_layout: Option<NodeLayout>) -> Option<(Rect, NodeLayout)> {
     if node.focused {
-        if let Some(layout) = parent_layout {
-            return Some((node.rect, layout));
-        }
+        return parent_layout.map(|layout| (node.rect, layout));
     }
-    for child in &node.nodes {
-        if let Some(result) = find_focused_and_parent_layout(child, Some(node.layout)) {
-            return Some(result);
-        }
-    }
-    None
+    node.nodes.iter().find_map(|child| find_focused_and_parent_layout(child, Some(node.layout)))
 }
 
 fn set_layout(conn: &mut Connection) -> Fallible<()> {
@@ -24,10 +17,8 @@ fn set_layout(conn: &mut Connection) -> Fallible<()> {
             if parent_layout == NodeLayout::SplitH {
                 conn.run_command("split v")?;
             }
-        } else {
-            if parent_layout == NodeLayout::SplitV {
-                conn.run_command("split h")?;
-            }
+        } else if parent_layout == NodeLayout::SplitV {
+            conn.run_command("split h")?;
         }
     }
     Ok(())
@@ -39,20 +30,12 @@ fn main() -> Fallible<()> {
     let events = conn.subscribe(&[EventType::Window])?;
 
     // New connection for sending commands
+    let mut cmd_conn = Connection::new()?;
     for event in events {
         match event? {
-            Event::Window(window_event) => {
-                if window_event.change == WindowChange::Focus {
-                    match Connection::new() {
-                        Ok(mut cmd_conn) => {
-                            if let Err(e) = set_layout(&mut cmd_conn) {
-                                eprintln!("Error setting layout: {}", e);
-                            }
-                        }
-                        Err(e) => {
-                            eprintln!("Error creating command connection: {}", e);
-                        }
-                    }
+            Event::Window(window_event) if window_event.change == WindowChange::Focus => {
+                if let Err(e) = set_layout(&mut cmd_conn) {
+                    eprintln!("Error setting layout: {}", e);
                 }
             }
             _ => {}
