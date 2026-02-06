@@ -3,7 +3,7 @@ name = "hvhvhv"
 version = "0.0.1"
 edition = "2024"
 license = "GPL-3.0"
-description = ""
+description = "alternating-layout for swaywm"
 repository = "https://github.com/somewhatfrog/hvhvhv"
 
 [dependencies]
