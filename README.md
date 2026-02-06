@@ -1,16 +1,16 @@
 # hvhvhv
 Inspired by [i3-alternating-layout](https://github.com/olemartinorg/i3-alternating-layout/)
 
-### building
+### Building
 ```
 cargo build --release
 ```
 
-### usage
-add to your sway config
+### Usage
+Add to your sway config
 ```
 exec "/path/to/hvhvhv"
 ```
 
-### thanks
+### Thanks
 [swayipc by JayceFayne](https://github.com/jaycefayne/swayipc-rs)
