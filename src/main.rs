@@ -12,8 +12,8 @@ fn set_layout(conn: &mut Connection) -> Fallible<()> {
     if let Some((rect, parent_layout)) = find_focused_and_parent_layout(&tree, tree.layout) {
         match (rect.height > rect.width, parent_layout) {
             (_, NodeLayout::Tabbed | NodeLayout::Stacked) => {}
-            (true, NodeLayout::SplitH) => { conn.run_command("split v")?; }
-            (false, NodeLayout::SplitV) => { conn.run_command("split h")?; }
+            (true, NodeLayout::SplitH) => { conn.run_command("splitv")?; }
+            (false, NodeLayout::SplitV) => { conn.run_command("splith")?; }
             _ => {}
         }
     }
