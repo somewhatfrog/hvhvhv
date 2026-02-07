@@ -21,17 +21,12 @@ fn set_layout(conn: &mut Connection) -> Fallible<()> {
 }
 
 fn main() -> Fallible<()> {
-    // Create connection and sub to events, subscribe() consumes the connection
-    let conn = Connection::new()?;
-    let events = conn.subscribe(&[EventType::Window])?;
-    // New connection for sending commands
+    let event_conn = Connection::new()?;
     let mut cmd_conn = Connection::new()?;
-    for event in events {
+    for event in event_conn.subscribe(&[EventType::Window])? {
         match event? {
             Event::Window(window_event) if window_event.change == WindowChange::Focus => {
-                if let Err(e) = set_layout(&mut cmd_conn) {
-                    eprintln!("Error setting layout: {}", e);
-                }
+                if let Err(err) = set_layout(&mut cmd_conn) { eprintln!("Error: {}", err); }
             }
             _ => {}
         }
